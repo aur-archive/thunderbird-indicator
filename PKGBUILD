@@ -1,0 +1,31 @@
+# Maintainer: Balló György <ballogyor+arch at gmail dot com>
+
+pkgname=thunderbird-indicator
+_pkgname=messagingmenu-extension
+pkgver=1.3
+_revision=156
+pkgrel=1
+pkgdesc="This extension will integrate Thunderbird nicely with Unity's Messaging Menu"
+arch=('any')
+url="https://launchpad.net/messagingmenu-extension"
+license=('GPL' 'LGPL' 'MPL')
+depends=('thunderbird' 'indicator-messages' 'libunity')
+makedepends=('zip' 'unzip')
+#source=($pkgname-$pkgver.tar.gz::http://bazaar.launchpad.net/~extension-hackers/$_pkgname/trunk/tarball/$_revision)
+source=(http://pkgbuild.com/~bgyorgy/sources/$pkgname-$pkgver.tar.gz)
+md5sums=('683563a5b3288e63790d4080d547efc5')
+
+build() {
+  cd "$srcdir/~extension-hackers/$_pkgname/trunk"
+
+  chmod 755 build.sh
+  ./build.sh
+}
+
+package() {
+  cd "$srcdir/~extension-hackers/$_pkgname/trunk"
+
+  emid=$(sed -n '/.*<em:id>\(.*\)<\/em:id>.*/{s//\1/p;q}' install.rdf)
+  install -d "$pkgdir/usr/lib/thunderbird/extensions/$emid"
+  unzip -d "$pkgdir/usr/lib/thunderbird/extensions/$emid" messagingmenu.xpi
+}
